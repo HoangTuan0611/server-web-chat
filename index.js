@@ -53,6 +53,16 @@ socketIo.on( "connection", ( socket ) =>
     console.log( data );
   } )
 
+  socket.emit("me", socket.id)
+
+  socket.on("callUser", (data) => {
+		socketIo.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
+	})
+
+  socket.on("answerCall", (data) => {
+		socketIo.to(data.to).emit("callAccepted", data.signal)
+	})
+
   socket.on( 'disconnect', () =>
   {
     console.log( 'User disconnected from the chat' );
