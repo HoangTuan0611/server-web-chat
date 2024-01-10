@@ -1,53 +1,65 @@
-var express = require("express");
-const http = require("http");
+var express = require( "express" );
+const http = require( "http" );
 var app = express();
-const server = http.createServer(app);
+const server = http.createServer( app );
 
-const socketIo = require("socket.io")(server, {
+const socketIo = require( "socket.io" )( server, {
   cors: {
     origin: "*",
   },
-});
+} );
 
-let numUsers = 0;
-let usersConnected = [];
+const CHAT_BOT = 'ChatBot';
+let chatRoom = '';
+let allUsers = [];
 
-socketIo.on("connection", (socket) => {
-  // usersConnected.push(socket)
-  
-  let addedUser = false;
+socketIo.on( "connection", ( socket ) =>
+{
+  // join room
+  socket.on( 'join_room', ( data ) =>
+  {
+    const { username, room } = data;
+    console.log( username, 'join room', room );
+    socket.join( room );
 
-  socket.emit("getId", socket.id);
+    socket.emit( 'receive_message', {
+      message: `${ username } has joined the chat room`,
+      username: CHAT_BOT,
+      file: ''
+    } );
 
-  socket.on("sendDataClient", function (data) {
-    socketIo.emit("sendDataServer", { data });
-  });
+    socket.to( room ).emit( 'receive_message', {
+      message: `${ username } has joined the chat room`,
+      username: CHAT_BOT,
+      file: ''
+    } );
 
-  socket.on("addUser", (username) => {
-    if (addedUser) return;
+    chatRoom = room;
+    allUsers.push( { id: socket.id, username, room } );
+    chatRoomUsers = allUsers.filter( ( user ) => user.room === room );
+    socket.to( room ).emit( 'chatroom_users', chatRoomUsers );
+    socket.emit( 'chatroom_users', chatRoomUsers );
+  } );
 
-    socket.username = username;
-    console.log(socket.username);
-    ++numUsers;
-    addedUser = true;
-    socket.emit("login", {
-      numUsers: numUsers,
-    });
+  socket.on( "send_message", ( data ) =>
+  {
+    console.log( data );
+    const { message, username, room, file } = data;
+    socketIo.in( room ).emit( "receive_message", { message: message, username: username, room: room, file: file.toString( "base64") } )
+  } );
 
-    socket.emit("user joined", {
-      username: socket.username,
-      numUsers: numUsers,
-    });
-  });
+  socket.on( 'upload_file', ( data ) =>
+  {
+    console.log( data );
+  } )
 
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-    // usersConnected.splice(usersConnected.indexOf(socket), 1);
-    // console.log(usersConnected);
-  });
+  socket.on( 'disconnect', () =>
+  {
+    console.log( 'User disconnected from the chat' );
+  } );
+} );
 
-});
-
-server.listen(3000, () => {
-  console.log("Running server on port 3000");
-});
+server.listen( 3000, () =>
+{
+  console.log( "Running server on port 3000" );
+} );
