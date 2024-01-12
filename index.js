@@ -3,30 +3,13 @@ const http = require( "http" );
 var app = express();
 const server = http.createServer( app );
 
-app.use((req, res, next) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://client-web-chat.vercel.app"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Content-Type-Options, Accept, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-  );
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  res.setHeader("Access-Control-Allow-Private-Network", true);
-  res.setHeader("Access-Control-Max-Age", 7200);
-
-  next();
-});
-
 const socketIo = require( "socket.io" )( server, {
   cors: {
-    origin: "*",
-  },
+    origin: "https://client-web-chat.vercel.app/",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
+  }
 } );
 
 const CHAT_BOT = 'ChatBot';
