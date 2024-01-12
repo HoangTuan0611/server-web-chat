@@ -9,7 +9,7 @@ app.use(cors());
 
 const socketIo = require( "socket.io" )( server, {
   cors: {
-    origin: "https://example.com",
+    origin: "https://client-web-chat.vercel.app/",
     allowedHeaders: ["abcd"],
     credentials: true
   }
