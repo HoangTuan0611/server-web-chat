@@ -1,26 +1,23 @@
-import { Server } from "socket.io";
 var express = require( "express" );
 const http = require( "http" );
+
 var app = express();
+const server = http.createServer(app);
 
-const server = http.createServer( app );
-
-const io = new Server(server, {
+const socketIo = require( "socket.io" )( server, {
   cors: {
-    origin: "https://client-web-chat.vercel.app"
+    origins: 'https://client-web-chat.vercel.app/roomchat'
   }
 });
 
 const CHAT_BOT = 'ChatBot';
-let chatRoom = '';
 let allUsers = [];
 
-app.use(cors())
 app.get('/', function (req, res, next) {
-  res.json({msg: 'This is CORS-enabled for all origins!'})
+  res.json({msg: 'Welcome to Nu web chat'})
 })
 
-io.on( "connection", ( socket ) =>
+socketIo.on( "connection", ( socket ) =>
 {
   // join room
   socket.on( 'join_room', ( data ) =>
@@ -41,7 +38,6 @@ io.on( "connection", ( socket ) =>
       file: ''
     } );
 
-    chatRoom = room;
     allUsers.push( { id: socket.id, username, room } );
     chatRoomUsers = allUsers.filter( ( user ) => user.room === room );
     socket.to( room ).emit( 'chatroom_users', chatRoomUsers );
@@ -78,5 +74,5 @@ io.on( "connection", ( socket ) =>
 
 server.listen( 3000, () =>
 {
-  console.log( "Running server on port 3000" );
+  console.log("Server started!");
 } );
