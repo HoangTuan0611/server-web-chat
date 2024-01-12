@@ -8,7 +8,7 @@ const server = http.createServer( app );
 
 const socketIo = require( "socket.io" )( server, {
   cors: {
-    origin: "https://client-web-chat.vercel.app",
+    origin: "https://client-web-chat.vercel.app, https://client-web-chat.vercel.app/roomchat",
     methods: ["GET", "POST"]
   }
 } );
