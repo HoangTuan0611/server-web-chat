@@ -9,9 +9,9 @@ app.use(cors());
 
 const socketIo = require( "socket.io" )( server, {
   cors: {
-    "origin": "*",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
+    origin: "https://example.com",
+    allowedHeaders: ["abcd"],
+    credentials: true
   }
 });
 
