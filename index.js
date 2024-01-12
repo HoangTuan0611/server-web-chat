@@ -4,9 +4,12 @@ const http = require( "http" );
 var app = express();
 const server = http.createServer(app);
 
+var cors = require('cors');
+app.use(cors());
+
 const socketIo = require( "socket.io" )( server, {
   cors: {
-    origins: 'https://client-web-chat.vercel.app/roomchat'
+    origins: '*'
   }
 });
 
