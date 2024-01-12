@@ -20,8 +20,6 @@ const socketIo = require( "socket.io" )( server, {
   }
 });
 
-socketIo.origins('*:*')
-
 const CHAT_BOT = 'ChatBot';
 let allUsers = [];
 
