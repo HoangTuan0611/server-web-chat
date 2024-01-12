@@ -8,9 +8,7 @@ var cors = require('cors');
 app.use(cors());
 
 const socketIo = require( "socket.io" )( server, {
-  cors: {
-    origins: '*'
-  },
+  cors: { origin : '*',},
   handlePreflightRequest: (req, res) => {
     res.writeHead(200, {
       "Access-Control-Allow-Origin": "*",
@@ -21,6 +19,8 @@ const socketIo = require( "socket.io" )( server, {
     res.end();
   }
 });
+
+socketIo.origins('*:*')
 
 const CHAT_BOT = 'ChatBot';
 let allUsers = [];
