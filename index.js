@@ -2,19 +2,25 @@ var express = require( "express" );
 const http = require( "http" );
 var app = express();
 var cors = require('cors')
-app.use(cors())
+
 
 const server = http.createServer( app );
 
 const socketIo = require( "socket.io" )( server, {
   cors: {
-    origin: "*",
-  },
+    origin: "https://client-web-chat.vercel.app",
+    methods: ["GET", "POST"]
+  }
 } );
 
 const CHAT_BOT = 'ChatBot';
 let chatRoom = '';
 let allUsers = [];
+
+app.use(cors())
+app.get('/', function (req, res, next) {
+  res.json({msg: 'This is CORS-enabled for all origins!'})
+})
 
 socketIo.on( "connection", ( socket ) =>
 {
