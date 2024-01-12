@@ -1,15 +1,15 @@
 var express = require( "express" );
 const http = require( "http" );
 var app = express();
+var cors = require('cors')
+app.use(cors())
+
 const server = http.createServer( app );
 
 const socketIo = require( "socket.io" )( server, {
   cors: {
-    origin: "https://client-web-chat.vercel.app/",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
-    credentials: true
-  }
+    origin: "*",
+  },
 } );
 
 const CHAT_BOT = 'ChatBot';
